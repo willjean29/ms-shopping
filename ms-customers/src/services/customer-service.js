@@ -1,6 +1,6 @@
 const { CustomerRepository } = require("../database");
 const { FormateData, GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } = require('../utils');
-const { APIError, BadRequestError } = require('../utils/app-errors')
+const { APIError, BadRequestError, STATUS_CODES } = require('../utils/app-errors')
 
 
 // All Business logic will be here
@@ -31,7 +31,7 @@ class CustomerService {
             return FormateData(null);
 
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
 
 
@@ -54,7 +54,7 @@ class CustomerService {
             return FormateData({ id: existingCustomer._id, token });
 
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
 
     }
@@ -68,7 +68,7 @@ class CustomerService {
             return FormateData(addressResult);
 
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
 
 
@@ -81,7 +81,7 @@ class CustomerService {
             return FormateData(existingCustomer);
 
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
     }
 
@@ -96,7 +96,7 @@ class CustomerService {
             return FormateData({ msg: 'Error' });
 
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
     }
 
@@ -106,7 +106,7 @@ class CustomerService {
             const wishListItems = await this.repository.Wishlist(customerId);
             return FormateData(wishListItems);
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
     }
 
@@ -116,7 +116,7 @@ class CustomerService {
             return FormateData(wishlistResult);
 
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
     }
 
@@ -125,7 +125,7 @@ class CustomerService {
             const cartResult = await this.repository.AddCartItem(customerId, product, qty, isRemove);
             return FormateData(cartResult);
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
     }
 
@@ -134,7 +134,7 @@ class CustomerService {
             const orderResult = await this.repository.AddOrderToProfile(customerId, order);
             return FormateData(orderResult);
         } catch (err) {
-            throw new APIError('Data Not found', err)
+            throw new APIError("API Error", STATUS_CODES.NOT_FOUND, "Data Not found");
         }
     }
 
