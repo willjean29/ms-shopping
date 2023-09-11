@@ -156,7 +156,7 @@ class CustomerRepository {
         if (cartItems.length > 0) {
           let isExist = false;
           cartItems.map((item) => {
-            if (item.product._id.toString() === product._id.toString()) {
+            if (item.product._id.toString() === _id.toString()) {
               if (isRemove) {
                 cartItems.splice(cartItems.indexOf(item), 1);
               } else {
@@ -179,8 +179,7 @@ class CustomerRepository {
 
         return cartSaveResult;
       }
-
-      throw new Error("Unable to add to cart!");
+      throw new Error("Unable to add to order!");
     } catch (err) {
       throw new APIError(
         "API Error",
@@ -206,7 +205,6 @@ class CustomerRepository {
 
         return profileResult;
       }
-
       throw new Error("Unable to add to order!");
     } catch (err) {
       throw new APIError(

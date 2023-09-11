@@ -94,9 +94,9 @@ module.exports = (app) => {
         const { _id } = req.user;
 
         try {
-            const { data } = await service.GetProductPayload(_id, { productId: req.body_id, qty: req.body.qty }, "ADD_TO_CART");
-            await PublishCustomerEvent(data);
-            await PublishShoppingEvent(data);
+            const { data } = await service.GetProductPayload(_id, { productId: req.body._id, qty: req.body.qty }, "ADD_TO_CART");
+            PublishCustomerEvent(data);
+            PublishShoppingEvent(data);
             const response = {
                 product: data.data.product,
                 unit: data.data.qty
