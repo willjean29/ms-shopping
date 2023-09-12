@@ -2,6 +2,7 @@ const express = require('express');
 const { PORT } = require('./config');
 const { databaseConnection } = require('./database');
 const expressApp = require('./express-app');
+const { Broker } = require('./utils');
 
 const StartServer = async () => {
 
@@ -9,7 +10,9 @@ const StartServer = async () => {
 
     await databaseConnection();
 
-    await expressApp(app);
+    const broker = Broker();
+
+    await expressApp(app, broker);
 
     app.listen(PORT, () => {
         console.log(`Customers listening to port ${PORT}`);

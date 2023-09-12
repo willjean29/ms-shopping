@@ -1,9 +1,15 @@
 const CustomerService = require("../services/customer-service");
+const { SuscribeMessage } = require("../utils");
 const UserAuth = require("./middlewares/auth");
 
-module.exports = (app) => {
+module.exports = (app, { kafka }) => {
   const service = new CustomerService();
-
+  SuscribeMessage(kafka, [
+    'MS_CUSTOMER_ADD_TO_WHITELIST',
+    'MS_CUSTOMER_REMOVE_FROM_WISHLIST',
+    'MS_CUSTOMER_ADD_TO_CART',
+    'MS_CUSTOMER_REMOVE_FROM_CART'
+  ])
   app.post("/signup", async (req, res, next) => {
     try {
       const { email, password, phone } = req.body;

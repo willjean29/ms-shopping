@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const { APP_SECRET } = require("../config");
 const { APIError } = require("./app-errors");
-
+const { Kafka } = require('kafkajs')
 //Utility functions
 module.exports.GenerateSalt = async () => {
   return await bcrypt.genSalt();
@@ -50,3 +50,47 @@ module.exports.FormateData = (data) => {
     throw new Error("Data Not found!");
   }
 };
+
+module.exports.Broker = () => {
+  const kafka = new Kafka({
+    clientId: 'ms-consumers',
+    brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
+  });
+  const producer = kafka.producer();
+  return { kafka, producer };
+}
+
+module.exports.PublishMessage = async (producer, topic, message) => {
+  try {
+    await producer.connect()
+    await producer.send({
+      topic: topic,
+      messages: [
+        { value: JSON.stringify(message) },
+      ],
+    })
+    await producer.disconnect()
+  } catch (err) {
+    throw err;
+  }
+}
+
+module.exports.SuscribeMessage = async (kafka, topics) => {
+  try {
+    const consumer = kafka.consumer({ groupId: 'ms-customers-consumer' })
+
+    await consumer.connect()
+    await consumer.subscribe({ topics, fromBeginning: true })
+
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        console.log({
+          topic,
+          value: message.value.toString(),
+        })
+      },
+    })
+  } catch (err) {
+    throw err;
+  }
+}
