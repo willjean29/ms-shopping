@@ -68,7 +68,7 @@ module.exports = (app, { kafka, producer }) => {
         try {
             const { data } = await service.GetProductPayload(_id, { productId: req.body._id }, "ADD_TO_WHITELIST");
             // await PublishCustomerEvent(data)
-            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_WHITELIST', data.data);
+            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_WHITELIST', data);
             return res.status(200).json(data.data.product);
         } catch (err) {
             next(err)
@@ -83,7 +83,7 @@ module.exports = (app, { kafka, producer }) => {
         try {
             const { data } = await service.GetProductPayload(_id, { productId }, "REMOVE_FROM_WISHLIST");
             // PublishCustomerEvent(data)
-            PublishMessage(producer, 'MS_CUSTOMER_REMOVE_FROM_WISHLIST', data.data);
+            PublishMessage(producer, 'MS_CUSTOMER_REMOVE_FROM_WISHLIST', data);
             return res.status(200).json(data.data.product);
         } catch (err) {
             next(err)
@@ -98,10 +98,10 @@ module.exports = (app, { kafka, producer }) => {
         try {
             const { data } = await service.GetProductPayload(_id, { productId: req.body._id, qty: req.body.qty }, "ADD_TO_CART");
             // PublishCustomerEvent(data);
-            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_CART', data.data);
+            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_CART', data);
 
             // PublishShoppingEvent(data);
-            PublishMessage(producer, 'MS_SHOPPING_ADD_TO_CART', data.data);
+            PublishMessage(producer, 'MS_SHOPPING_ADD_TO_CART', data);
 
             const response = {
                 product: data.data.product,
@@ -122,10 +122,10 @@ module.exports = (app, { kafka, producer }) => {
         try {
             const { data } = await service.GetProductPayload(_id, { productId }, "REMOVE_FROM_CART");
             // PublishCustomerEvent(data);
-            PublishMessage(producer, 'MS_CUSTOMER_REMOVE_FROM_CART', data.data);
+            PublishMessage(producer, 'MS_CUSTOMER_REMOVE_FROM_CART', data);
 
             // PublishShoppingEvent(data);
-            PublishMessage(producer, 'MS_SHOPPING_REMOVE_FROM_CART', data.data);
+            PublishMessage(producer, 'MS_SHOPPING_REMOVE_FROM_CART', data);
 
             const response = {
                 product: data.data.product,

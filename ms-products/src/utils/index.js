@@ -86,12 +86,12 @@ module.exports.PublishMessage = async (producer, topic, message) => {
   }
 }
 
-module.exports.SuscribeMessage = async (kafka, topic) => {
+module.exports.SuscribeMessage = async (kafka, topics) => {
   try {
     const consumer = kafka.consumer({ groupId: 'ms-products-consumer' })
 
     await consumer.connect()
-    await consumer.subscribe({ topic, fromBeginning: true })
+    await consumer.subscribe({ topics, fromBeginning: true })
 
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
