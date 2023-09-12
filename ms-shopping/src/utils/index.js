@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const { Kafka } = require('kafkajs');
 
 const { APP_SECRET } = require("../config");
 
@@ -50,6 +51,55 @@ module.exports.FormateData = (data) => {
     throw new Error("Data Not found!");
   }
 };
+
+// Message Broker
+
+module.exports.Broker = () => {
+  const kafka = new Kafka({
+    clientId: 'ms-shopping',
+    brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
+  });
+  const producer = kafka.producer();
+  return { kafka, producer };
+}
+
+module.exports.PublishMessage = async (producer, topic, message) => {
+  try {
+    console.log({ topic, message })
+    await producer.connect()
+    await producer.send({
+      topic: topic,
+      messages: [
+        { value: JSON.stringify(message) },
+      ],
+    })
+    await producer.disconnect()
+  } catch (err) {
+    throw err;
+  }
+}
+
+module.exports.SuscribeMessage = async (kafka, topics, service) => {
+  try {
+    const consumer = kafka.consumer({ groupId: 'ms-shopping-consumer' })
+
+    await consumer.connect()
+    await consumer.subscribe({ topics, fromBeginning: true })
+
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        const payload = message.value.toString();
+        console.log({
+          topic,
+          value: payload,
+        })
+        service.SubscribeEvents(payload);
+      },
+    })
+  } catch (err) {
+    throw err;
+  }
+}
 
 module.exports.PublishCustomerEvent = async (payload) => {
   axios.post('http://localhost:8000/customer/app-events', {

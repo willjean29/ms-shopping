@@ -8,8 +8,10 @@ module.exports = (app, { kafka }) => {
     'MS_CUSTOMER_ADD_TO_WHITELIST',
     'MS_CUSTOMER_REMOVE_FROM_WISHLIST',
     'MS_CUSTOMER_ADD_TO_CART',
-    'MS_CUSTOMER_REMOVE_FROM_CART'
-  ])
+    'MS_CUSTOMER_REMOVE_FROM_CART',
+    'MS_CUSTOMER_CREATE_ORDER'
+  ], service)
+
   app.post("/signup", async (req, res, next) => {
     try {
       const { email, password, phone } = req.body;

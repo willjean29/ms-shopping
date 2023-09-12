@@ -79,7 +79,7 @@ module.exports.PublishMessage = async (producer, topic, message) => {
   }
 }
 
-module.exports.SuscribeMessage = async (kafka, topics) => {
+module.exports.SuscribeMessage = async (kafka, topics, service) => {
   try {
     const consumer = kafka.consumer({ groupId: 'ms-products-consumer' })
 
@@ -88,10 +88,12 @@ module.exports.SuscribeMessage = async (kafka, topics) => {
 
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
+        const payload = message.value.toString();
         console.log({
           topic,
-          value: message.value.toString(),
+          value: payload,
         })
+        service.SubscribeEvents(payload);
       },
     })
   } catch (err) {

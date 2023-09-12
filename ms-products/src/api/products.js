@@ -98,7 +98,7 @@ module.exports = (app, { kafka, producer }) => {
         try {
             const { data } = await service.GetProductPayload(_id, { productId: req.body._id, qty: req.body.qty }, "ADD_TO_CART");
             // PublishCustomerEvent(data);
-            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_CART', data);
+            // PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_CART', data);
 
             // PublishShoppingEvent(data);
             PublishMessage(producer, 'MS_SHOPPING_ADD_TO_CART', data);

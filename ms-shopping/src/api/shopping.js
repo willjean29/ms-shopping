@@ -1,10 +1,15 @@
 const ShoppingService = require("../services/shopping-service");
-const { PublishCustomerEvent } = require("../utils");
+const { PublishCustomerEvent, PublishMessage, SuscribeMessage } = require("../utils");
 const UserAuth = require('./middlewares/auth');
 
-module.exports = (app) => {
+module.exports = (app, { kafka, producer }) => {
 
     const service = new ShoppingService();
+
+    SuscribeMessage(kafka, [
+        'MS_SHOPPING_ADD_TO_CART',
+        'MS_SHOPPING_REMOVE_FROM_CART'
+    ], service);
 
     app.post('/order', UserAuth, async (req, res, next) => {
 
@@ -15,7 +20,8 @@ module.exports = (app) => {
         try {
             const { data } = await service.PlaceOrder({ _id, txnNumber });
             const payload = await service.GetOrderPayload(_id, data, 'CREATE_ORDER');
-            PublishCustomerEvent(payload);
+            // PublishCustomerEvent(payload);
+            PublishMessage(producer, 'MS_CUSTOMER_CREATE_ORDER', payload.data);
             return res.status(200).json(data);
 
         } catch (err) {

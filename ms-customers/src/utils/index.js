@@ -53,7 +53,7 @@ module.exports.FormateData = (data) => {
 
 module.exports.Broker = () => {
   const kafka = new Kafka({
-    clientId: 'ms-consumers',
+    clientId: 'ms-customers',
     brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
   });
   const producer = kafka.producer();
@@ -76,7 +76,7 @@ module.exports.PublishMessage = async (producer, topic, message) => {
   }
 }
 
-module.exports.SuscribeMessage = async (kafka, topics) => {
+module.exports.SuscribeMessage = async (kafka, topics, service) => {
   try {
     const consumer = kafka.consumer({ groupId: 'ms-customers-consumer' })
 
@@ -85,10 +85,12 @@ module.exports.SuscribeMessage = async (kafka, topics) => {
 
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
+        const payload = message.value.toString();
         console.log({
           topic,
-          value: message.value.toString(),
+          value: payload,
         })
+        service.SubscribeEvents(payload);
       },
     })
   } catch (err) {
