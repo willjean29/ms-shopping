@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const { Kafka } = require('kafkajs');
 
 const { APP_SECRET } = require("../config");
 
@@ -51,7 +52,61 @@ module.exports.FormateData = (data) => {
   }
 };
 
-module.exports.PublishCustomerEvent = async (payload) => {
+// Message Broker
+
+
+// export const kafka = new Kafka({
+//   clientId: 'ms-ambassador',
+//   brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
+// })
+
+// export const producer = kafka.producer()
+
+module.exports.Broker = () => {
+  const kafka = new Kafka({
+    clientId: 'ms-products',
+    brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
+  });
+  const producer = kafka.producer();
+  return { kafka, producer };
+}
+
+module.exports.PublishMessage = async (producer, topic, message) => {
+  try {
+    await producer.connect()
+    await producer.send({
+      topic: topic,
+      messages: [
+        { value: JSON.stringify(message) },
+      ],
+    })
+    await producer.disconnect()
+  } catch (err) {
+    throw err;
+  }
+}
+
+module.exports.SuscribeMessage = async (kafka, topic) => {
+  try {
+    const consumer = kafka.consumer({ groupId: 'ms-products-consumer' })
+
+    await consumer.connect()
+    await consumer.subscribe({ topic, fromBeginning: true })
+
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        console.log({
+          topic,
+          value: message.value.toString(),
+        })
+      },
+    })
+  } catch (err) {
+    throw err;
+  }
+}
+
+module.exports.PublishCustomerEvent = async (producer, topic, message) => {
   axios.post('http://localhost:8000/customer/app-events', {
     payload
   })

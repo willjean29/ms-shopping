@@ -1,8 +1,8 @@
 const ProductService = require('../services/product-service');
 const UserAuth = require('./middlewares/auth');
-const { PublishCustomerEvent, PublishShoppingEvent } = require('../utils')
+const { PublishCustomerEvent, PublishShoppingEvent, PublishMessage } = require('../utils')
 
-module.exports = (app) => {
+module.exports = (app, { kafka, producer }) => {
 
     const service = new ProductService();
 
@@ -67,7 +67,8 @@ module.exports = (app) => {
 
         try {
             const { data } = await service.GetProductPayload(_id, { productId: req.body._id }, "ADD_TO_WHITELIST");
-            await PublishCustomerEvent(data)
+            // await PublishCustomerEvent(data)
+            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_WHITELIST', data.data);
             return res.status(200).json(data.data.product);
         } catch (err) {
             next(err)
@@ -81,7 +82,8 @@ module.exports = (app) => {
 
         try {
             const { data } = await service.GetProductPayload(_id, { productId }, "REMOVE_FROM_WISHLIST");
-            await PublishCustomerEvent(data)
+            // PublishCustomerEvent(data)
+            PublishMessage(producer, 'MS_CUSTOMER_REMOVE_FROM_WISHLIST', data.data);
             return res.status(200).json(data.data.product);
         } catch (err) {
             next(err)
@@ -95,8 +97,12 @@ module.exports = (app) => {
 
         try {
             const { data } = await service.GetProductPayload(_id, { productId: req.body._id, qty: req.body.qty }, "ADD_TO_CART");
-            PublishCustomerEvent(data);
-            PublishShoppingEvent(data);
+            // PublishCustomerEvent(data);
+            PublishMessage(producer, 'MS_CUSTOMER_ADD_TO_CART', data.data);
+
+            // PublishShoppingEvent(data);
+            PublishMessage(producer, 'MS_SHOPPING_ADD_TO_CART', data.data);
+
             const response = {
                 product: data.data.product,
                 unit: data.data.qty
@@ -115,8 +121,12 @@ module.exports = (app) => {
 
         try {
             const { data } = await service.GetProductPayload(_id, { productId }, "REMOVE_FROM_CART");
-            await PublishCustomerEvent(data);
-            await PublishShoppingEvent(data);
+            // PublishCustomerEvent(data);
+            PublishMessage(producer, 'MS_CUSTOMER_REMOVE_FROM_CART', data.data);
+
+            // PublishShoppingEvent(data);
+            PublishMessage(producer, 'MS_SHOPPING_REMOVE_FROM_CART', data.data);
+
             const response = {
                 product: data.data.product,
                 unit: data.data.qty
