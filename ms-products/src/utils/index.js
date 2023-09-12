@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const { Kafka } = require('kafkajs');
@@ -54,14 +54,6 @@ module.exports.FormateData = (data) => {
 
 // Message Broker
 
-
-// export const kafka = new Kafka({
-//   clientId: 'ms-ambassador',
-//   brokers: [process.env.KAFKA_BOOTSTRAP_SERVERS],
-// })
-
-// export const producer = kafka.producer()
-
 module.exports.Broker = () => {
   const kafka = new Kafka({
     clientId: 'ms-products',
@@ -73,6 +65,7 @@ module.exports.Broker = () => {
 
 module.exports.PublishMessage = async (producer, topic, message) => {
   try {
+    console.log({ topic, message })
     await producer.connect()
     await producer.send({
       topic: topic,

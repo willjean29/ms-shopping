@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const { APP_SECRET } = require("../config");
@@ -62,6 +62,7 @@ module.exports.Broker = () => {
 
 module.exports.PublishMessage = async (producer, topic, message) => {
   try {
+    console.log({ topic, message })
     await producer.connect()
     await producer.send({
       topic: topic,
