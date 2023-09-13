@@ -15,19 +15,7 @@ services:
     environment:
       - KAFKA_ADVERTISED_HOST_NAME=kafka
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-
-  gateway:
-    build: ./gateway
-    command: "npm run dev"
-    volumes:
-      - ./gateway:/app
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-    ports:
-      - "8000:8000"
-    depends_on:
-      - kafka
-
+      
   ms-customers:
     build: ./ms-customers
     command: "npm run dev"
@@ -63,6 +51,16 @@ services:
       - "8003:8003"
     depends_on:
       - kafka
+
+  nginx-proxy:
+    build: ./nginx
+    depends_on:
+      - ms-products
+      - ms-shopping
+      - ms-customers
+      - kafka
+    ports:
+      - "80:80"
 
 networks:
   ms-shopping:
