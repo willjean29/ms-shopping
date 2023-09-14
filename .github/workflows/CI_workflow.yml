@@ -24,8 +24,21 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - name: Test Customer Service
       working-directory: ./ms-customers
+      run: |
+        npm ci
+        npm test
+
+    - name: Test Products Service
+      working-directory: ./ms-products
+      run: |
+        npm ci
+        npm test
+
+    - name: Test Shopping Service
+      working-directory: ./ms-shopping
       run: |
         npm ci
         npm test
