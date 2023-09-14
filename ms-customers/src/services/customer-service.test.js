@@ -1,0 +1,7 @@
+describe("Customer Service test suite", () => {
+  describe("SignIn", () => {
+    it("validate user inputs", () => { });
+
+    it("validate response", () => { })
+  })
+})
