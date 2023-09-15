@@ -28,17 +28,23 @@ jobs:
     - name: Test Customer Service
       working-directory: ./ms-customers
       run: |
+        ls -l  # Listar archivos en la carpeta actual
+        cat package-lock.json  # Imprimir el contenido del archivo de bloqueo de dependencias
         npm ci
         npm test
 
     - name: Test Products Service
       working-directory: ./ms-products
       run: |
+        ls -l  # Listar archivos en la carpeta actual
+        cat package-lock.json  # Imprimir el contenido del archivo de bloqueo de dependencias
         npm ci
         npm test
 
     - name: Test Shopping Service
       working-directory: ./ms-shopping
       run: |
+        ls -l  # Listar archivos en la carpeta actual
+        cat package-lock.json  # Imprimir el contenido del archivo de bloqueo de dependencias
         npm ci
         npm test
