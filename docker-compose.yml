@@ -18,7 +18,7 @@ services:
       
   ms-customers:
     build: ./ms-customers
-    command: "npm run dev"
+    command: "npm start"
     volumes:
       - ./ms-customers:/app
     environment:
@@ -30,7 +30,7 @@ services:
 
   ms-products:
     build: ./ms-products
-    command: "npm run dev"
+    command: "npm start"
     volumes:
       - ./ms-products:/app
     environment:
@@ -42,7 +42,7 @@ services:
 
   ms-shopping:
     build: ./ms-shopping
-    command: "npm run dev"
+    command: "npm start"
     volumes:
       - ./ms-shopping:/app
     environment:
