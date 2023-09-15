@@ -21,6 +21,7 @@ services:
     command: "npm start"
     volumes:
       - ./ms-customers:/app
+      - /app/node_modules
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
@@ -33,6 +34,7 @@ services:
     command: "npm start"
     volumes:
       - ./ms-products:/app
+      - /app/node_modules
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
@@ -45,6 +47,7 @@ services:
     command: "npm start"
     volumes:
       - ./ms-shopping:/app
+      - /app/node_modules
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
